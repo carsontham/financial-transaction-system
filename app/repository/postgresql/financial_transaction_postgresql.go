@@ -4,11 +4,14 @@ import (
 	"database/sql"
 	"errors"
 	"financial-transaction-system/app/domain"
+	"financial-transaction-system/app/repository"
 	"financial-transaction-system/app/repository/dbmodel"
 	"log"
 
 	_ "github.com/lib/pq"
 )
+
+var _ repository.FinancialTransactionRepository = (*FinancialTransactionPostgresRepository)(nil)
 
 type GetDB func() *sql.DB
 
@@ -44,11 +47,19 @@ func (ftr FinancialTransactionPostgresRepository) GetAccountByID(id int64) (*dom
 	return dbmodel.AccountDBModelToDomainModel(account), nil
 }
 
-func (ftr FinancialTransactionPostgresRepository) CreateNewAccount() error {
-	postgresqlDB := ftr.getDB
-	if postgresqlDB == nil {
+func (ftr FinancialTransactionPostgresRepository) CreateNewAccount(account *dbmodel.Account) error {
+	db := ftr.getDB()
+	if db == nil {
 		log.Println("database error")
 	}
+
+	result, err := db.Exec("INSERT INTO account (id, balance) VALUES ($1, $2)",
+		account.AccountID, account.Balance)
+	if err != nil {
+		return err
+	}
+	id, _ := result.RowsAffected()
+	log.Printf("%d new row created: ", id)
 	return nil
 }
 

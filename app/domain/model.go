@@ -17,9 +17,18 @@ type Transaction struct {
 	Amount               float64
 }
 
-func AccountDomainModelToViewModel(acc *Account) *viewmodel.Account {
-	return &viewmodel.Account{
+func AccountDomainModelToViewModel(acc *Account) *viewmodel.AccountResponse {
+	return &viewmodel.AccountResponse{
 		AccountID: acc.AccountID,
 		Balance:   strconv.FormatFloat(acc.Balance, 'f', -1, 64),
 	}
+}
+
+func AccountViewModelToDomainModel(acc *viewmodel.AccountRequest) (*Account, error) {
+
+	balance, err := strconv.ParseFloat(acc.Balance, 64)
+	if err != nil {
+		return nil, err
+	}
+	return &Account{AccountID: acc.AccountID, Balance: balance}, nil
 }

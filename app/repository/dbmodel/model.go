@@ -20,3 +20,10 @@ func AccountDBModelToDomainModel(acc Account) *domain.Account {
 		Balance:   acc.Balance,
 	}
 }
+
+func AccountDomainModelToDBModel(acc *domain.Account) *Account {
+	return &Account{
+		AccountID: acc.AccountID,
+		Balance:   acc.Balance,
+	}
+}
