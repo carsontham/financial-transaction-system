@@ -1,4 +1,4 @@
-package postgresql_repository
+package repository
 
 import (
 	"database/sql"
@@ -7,41 +7,36 @@ import (
 
 type GetDB func() *sql.DB
 
-type FinancialTransactionRepository struct {
+type FinancialTransactionPostgresRepository struct {
 	getDB GetDB
 }
 
-func NewFinancialTransactionRepository() *FinancialTransactionRepository {
-	return &FinancialTransactionRepository{
-		getDB: GetDBConnection,
+func NewFinancialTransactionRepository(getDBConnection GetDB) *FinancialTransactionPostgresRepository {
+	return &FinancialTransactionPostgresRepository{
+		getDB: getDBConnection,
 	}
 }
 
-func GetDBConnection() *sql.DB {
-	db, err := sql.Open("postgres", "postgresql://root:secret@localhost:5432/memo-db?sslmode=disable")
-	if err != nil {
-		log.Fatal("Cannot connect to db:", err)
+func (ftr FinancialTransactionPostgresRepository) GetAccountByID() error {
+	postgresqlDB := ftr.getDB()
+	if postgresqlDB == nil {
+		log.Println("database error")
 	}
-	return db
+	return nil
 }
 
-func (ftr FinancialTransactionRepository) GetAccountByID() {
+func (ftr FinancialTransactionPostgresRepository) CreateNewAccount() error {
 	postgresqlDB := ftr.getDB
 	if postgresqlDB == nil {
 		log.Println("database error")
 	}
+	return nil
 }
 
-func (ftr FinancialTransactionRepository) CreateNewAccount() {
+func (ftr FinancialTransactionPostgresRepository) CreateNewTransaction() error {
 	postgresqlDB := ftr.getDB
 	if postgresqlDB == nil {
 		log.Println("database error")
 	}
-}
-
-func (ftr FinancialTransactionRepository) CreateNewTransaction() {
-	postgresqlDB := ftr.getDB
-	if postgresqlDB == nil {
-		log.Println("database error")
-	}
+	return nil
 }
