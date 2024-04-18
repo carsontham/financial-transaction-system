@@ -7,7 +7,7 @@ import (
 
 func (s *Server) SetUpRoutes(service *usecase.Service) {
 	// TODO:
-	s.router.Get("/accounts/{account_id}", handlers.GetAccountByID(service))
+	s.router.Get("/accounts/{account_id:\\d+}", handlers.GetAccountByID(service))
 	s.router.Get("/accounts", handlers.GetAccountByID(service))
 	s.router.Get("/transactions", handlers.CreateNewTransaction())
 

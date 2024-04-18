@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
 	"financial-transaction-system/app/domain"
 	"financial-transaction-system/app/repository/dbmodel"
 	"log"
@@ -34,6 +35,10 @@ func (ftr FinancialTransactionPostgresRepository) GetAccountByID(id int64) (*dom
 	var account dbmodel.Account
 	err := row.Scan(&account.AccountID, &account.Balance)
 	if err != nil {
+		log.Println(err)
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, domain.ErrNotFound
+		}
 		return nil, err
 	}
 	return dbmodel.AccountDBModelToDomainModel(account), nil
