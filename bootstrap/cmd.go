@@ -1,11 +1,7 @@
 package bootstrap
 
-import "fmt"
-
-func API() {
-
-}
-
 func Run() {
-	fmt.Println("Hello world!")
+	s := NewServer(":3000")
+	s.SetUpRoutes()
+	s.RunServer()
 }
