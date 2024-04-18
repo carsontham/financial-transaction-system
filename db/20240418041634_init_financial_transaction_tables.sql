@@ -3,13 +3,13 @@
 
 CREATE TABLE "account"
 (
-    id SERIAL PRIMARY KEY,
+    id INTEGER NOT NULL PRIMARY KEY,
     balance DECIMAL(15,8) NOT NULL
 );
 
 CREATE TABLE transaction
 (
-    transaction_id INTEGER PRIMARY KEY,
+    transaction_id SERIAL PRIMARY KEY,
     source_account_id INTEGER NOT NULL,
     destination_account_id INTEGER NOT NULL,
     amount DECIMAL(15, 8)  NOT NULL

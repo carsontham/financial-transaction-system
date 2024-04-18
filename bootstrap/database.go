@@ -8,7 +8,7 @@ import (
 func GetDBConnection() *sql.DB {
 	// these values can be placed in .env files
 	const driverName = "postgres"
-	const dataSourceName = "postgresql://root:secret@localhost:5432/financial_transaction?sslmode=disable"
+	const dataSourceName = "postgresql://root:secret@localhost:5432/financial-transaction-db?sslmode=disable"
 
 	db, err := sql.Open(driverName, dataSourceName)
 	if err != nil {
