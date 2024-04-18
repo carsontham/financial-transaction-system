@@ -1,6 +1,9 @@
 package domain
 
-import "financial-transaction-system/app/adapter/http/handlers/viewmodel"
+import (
+	"financial-transaction-system/app/adapter/http/handlers/viewmodel"
+	"strconv"
+)
 
 type Account struct {
 	AccountID int64
@@ -17,6 +20,6 @@ type Transaction struct {
 func AccountDomainModelToViewModel(acc *Account) *viewmodel.Account {
 	return &viewmodel.Account{
 		AccountID: acc.AccountID,
-		Balance:   acc.Balance,
+		Balance:   strconv.FormatFloat(acc.Balance, 'f', -1, 64),
 	}
 }
