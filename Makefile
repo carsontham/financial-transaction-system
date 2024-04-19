@@ -49,3 +49,16 @@ remove-db:
 # removes the volume pgdata that is mounted on host machine
 remove-volume:
 	-docker volume rm pgdata
+
+
+# to generate coverage report and display in html
+coverage:
+	go test -coverprofile=coverage.out ./app/usecase
+	go tool cover -html=coverage.out
+
+# unit-tests for service layer
+unit-test:
+	go test -coverprofile=coverage.out ./app/usecase
+
+
+

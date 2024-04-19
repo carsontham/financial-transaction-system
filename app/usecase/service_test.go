@@ -139,9 +139,93 @@ func TestService_GetTransaction(t *testing.T) {
 }
 
 func TestService_PerformTransaction(t *testing.T) {
+	setup := func(t *testing.T) (
+		repoMock *repositorytest.MockFinancialTransactionRepository,
+		service *Service,
+	) {
+		ctrl := gomock.NewController(t)
+		repoMock = repositorytest.NewMockFinancialTransactionRepository(ctrl)
+		service = NewService(repoMock)
+		return
+	}
 
+	t.Run("it should successfully perform a transfer transaction", func(t *testing.T) {
+		repo, service := setup(t)
+		key := "testKey"
+		stubAccount := &domain.Account{
+			AccountID: 123,
+		}
+
+		stubTxn := &domain.Transaction{
+			TransactionID:        123,
+			SourceAccountID:      888,
+			DestinationAccountID: 999,
+			Amount:               500.55,
+			IdempotencyKey:       key,
+		}
+
+		repo.EXPECT().GetAccountByID(int64(888)).Return(stubAccount, nil).Times(1)
+		repo.EXPECT().GetAccountByID(int64(999)).Return(stubAccount, nil).Times(1)
+		repo.EXPECT().PerformTransaction(stubTxn).Return(nil).Times(1)
+		err := service.PerformTransaction(stubTxn)
+		require.NoError(t, err)
+
+	})
+
+	t.Run("it should fail and return an error if any account does not exist", func(t *testing.T) {
+		repo, service := setup(t)
+		key := "testKey"
+		stubError := domain.ErrNotFound
+
+		stubTxn := &domain.Transaction{
+			TransactionID:        123,
+			SourceAccountID:      888,
+			DestinationAccountID: 999,
+			Amount:               500.55,
+			IdempotencyKey:       key,
+		}
+
+		repo.EXPECT().GetAccountByID(int64(888)).Return(nil, stubError).Times(1)
+		repo.EXPECT().GetAccountByID(int64(999)).Return(nil, stubError).Times(1)
+		err := service.PerformTransaction(stubTxn)
+		assert.ErrorIs(t, err, stubError)
+
+	})
 }
 
 func TestService_GetAllTransactions(t *testing.T) {
+	setup := func(t *testing.T) (
+		repoMock *repositorytest.MockFinancialTransactionRepository,
+		service *Service,
+	) {
+		ctrl := gomock.NewController(t)
+		repoMock = repositorytest.NewMockFinancialTransactionRepository(ctrl)
+		service = NewService(repoMock)
+		return
+	}
 
+	t.Run("it should successfully retrieve all transactions", func(t *testing.T) {
+		repo, service := setup(t)
+		stubTransactions := []*domain.Transaction{
+			{
+				TransactionID:        001,
+				SourceAccountID:      123,
+				DestinationAccountID: 321,
+				Amount:               500.55,
+				IdempotencyKey:       "testKey",
+			},
+			{
+				TransactionID:        002,
+				SourceAccountID:      123,
+				DestinationAccountID: 124,
+				Amount:               200.55678,
+				IdempotencyKey:       "testKey",
+			},
+		}
+
+		repo.EXPECT().GetAllTransactions().Return(stubTransactions, nil).Times(1)
+		transactions, err := service.GetAllTransactions()
+		require.NoError(t, err)
+		assert.Equal(t, stubTransactions, transactions)
+	})
 }
