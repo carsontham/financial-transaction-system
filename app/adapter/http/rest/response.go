@@ -63,10 +63,10 @@ func StatusNoContent(w http.ResponseWriter) {
 }
 
 // BadRequest for 400
-func BadRequest(w http.ResponseWriter) {
+func BadRequest(w http.ResponseWriter, err error) {
 	body := &JSONRespBody{
 		StatusCode: http.StatusBadRequest,
-		Data:       "Invalid payload body",
+		Error:      err.Error(),
 	}
 	b, err := json.Marshal(body)
 	if err != nil {

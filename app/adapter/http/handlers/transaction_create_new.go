@@ -18,7 +18,7 @@ func CreateNewTransaction(service usecase.FinancialTransactionService, v *valida
 
 		var transactionReq viewmodel.TransactionRequest
 		if err := json.NewDecoder(req.Body).Decode(&transactionReq); err != nil {
-			rest.BadRequest(w)
+			rest.BadRequest(w, err)
 			return
 		}
 

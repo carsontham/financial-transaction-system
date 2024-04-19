@@ -25,7 +25,7 @@ func TestGetAccountByID(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		serviceMock = servicetest.NewMockFinancialTransactionService(ctrl)
 
-		router := chi.NewMux()
+		router := chi.NewRouter()
 		router.Get("/accounts/{account_id:\\d+}", handlers.GetAccountByID(serviceMock))
 		s := httptest.NewServer(router)
 		c = s.Client()
@@ -35,11 +35,6 @@ func TestGetAccountByID(t *testing.T) {
 
 	t.Run("it should successfully get an account by id, return 200", func(t *testing.T) {
 		serviceMock, client, url := setUp(t)
-		//reqBody := `
-		//	{
-		//		"account_id": 998823123,
-		//		"initial_balance": "100.123456"
-		//	}`
 		stubAccountID := int64(123)
 		serviceMock.EXPECT().GetAccountById(stubAccountID).Times(1).Return(new(domain.Account), nil)
 

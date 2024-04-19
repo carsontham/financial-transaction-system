@@ -59,6 +59,7 @@ coverage:
 # unit-tests for service layer
 unit-test:
 	go test -coverprofile=coverage.out ./app/usecase
+	go test -coverprofile=coverage.out ./app/adapter/http/handlers
 
 
 

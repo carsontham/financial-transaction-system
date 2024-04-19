@@ -15,7 +15,7 @@ func CreateNewAccount(service usecase.FinancialTransactionService, v *validator.
 
 		var accountReq viewmodel.AccountRequest
 		if err := json.NewDecoder(req.Body).Decode(&accountReq); err != nil {
-			rest.BadRequest(w)
+			rest.BadRequest(w, err)
 			return
 		}
 
