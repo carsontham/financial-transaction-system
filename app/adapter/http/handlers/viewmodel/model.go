@@ -11,7 +11,15 @@ type AccountRequest struct {
 }
 
 type TransactionRequest struct {
-	SourceAccountID      int64 `json:"source_account_id"`
-	DestinationAccountID int64 `json:"destination_account_id"`
-	Amount               int64 `json:"amount"`
+	SourceAccountID      int64  `json:"source_account_id" validate:"required"`
+	DestinationAccountID int64  `json:"destination_account_id" validate:"required"`
+	Amount               string `json:"amount" validate:"required,valid_balance,valid_amount"`
+}
+
+type TransactionResponse struct {
+	TransactionID        int64  `json:"transaction_id"`
+	SourceAccountID      int64  `json:"source_account_id"`
+	DestinationAccountID int64  `json:"destination_account_id"`
+	Amount               string `json:"amount"`
+	IdempotencyKey       string `json:"idempotency_key"`
 }

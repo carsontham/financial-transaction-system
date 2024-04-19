@@ -1,10 +1,10 @@
 -- +goose Up
 -- +goose StatementBegin
 
-CREATE TABLE "account"
+CREATE TABLE account
 (
     id INTEGER NOT NULL PRIMARY KEY,
-    balance DECIMAL(20,10) NOT NULL
+    balance DECIMAL(20,10) NOT NULL CHECK (balance >= 0)
 );
 
 CREATE TABLE transaction
@@ -12,7 +12,8 @@ CREATE TABLE transaction
     transaction_id SERIAL PRIMARY KEY,
     source_account_id INTEGER NOT NULL,
     destination_account_id INTEGER NOT NULL,
-    amount DECIMAL(20, 10)  NOT NULL
+    amount DECIMAL(20, 10)  NOT NULL CHECK (amount >= 0),
+    idempotency_key VARCHAR NOT NULL
 );
 
 INSERT INTO account (id, balance)

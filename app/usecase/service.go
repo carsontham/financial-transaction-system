@@ -4,7 +4,6 @@ import (
 	"errors"
 	"financial-transaction-system/app/domain"
 	"financial-transaction-system/app/repository"
-	"financial-transaction-system/app/repository/dbmodel"
 	"log"
 )
 
@@ -27,23 +26,49 @@ func (s *Service) GetAccountById(id int64) (*domain.Account, error) {
 	return account, nil
 }
 
-// IsFirstRequest checks whether account has already been created (serves as a form of idempotency)
-func (s *Service) IsFirstRequest(id int64) bool {
+// CheckIfAccountExist checks whether account exists (serves as a form of idempotency check)
+func (s *Service) CheckIfAccountExist(id int64) bool {
 	_, err := s.GetAccountById(id)
 	if errors.Is(err, domain.ErrNotFound) {
-		log.Println("new creation request - ID not found")
-		return true
+		log.Println("account  - ID not found")
+		return false
 	}
-	return false
+	return true
 }
 
 func (s *Service) CreateNewAccount(account *domain.Account) error {
 	log.Println("in use case layer")
 
-	accDBModel := dbmodel.AccountDomainModelToDBModel(account)
-	if err := s.financialTransactionRepo.CreateNewAccount(accDBModel); err != nil {
+	if err := s.financialTransactionRepo.CreateNewAccount(account); err != nil {
 		log.Println("error creating new account: ", err)
 		return err
 	}
 	return nil
+}
+
+func (s *Service) GetTransaction(key string) (*domain.Transaction, error) {
+	transaction, err := s.financialTransactionRepo.GetTransactionByIdempotencyKey(key)
+	if err != nil {
+		return nil, err
+	}
+	return transaction, nil
+}
+
+// PerformTransaction checks for valid source and destination accounts before making the transfer
+func (s *Service) PerformTransaction(txn *domain.Transaction) error {
+	isValidSourceAccount := s.CheckIfAccountExist(txn.SourceAccountID)
+	isValidDestinationAccount := s.CheckIfAccountExist(txn.DestinationAccountID)
+	if !isValidSourceAccount || !isValidDestinationAccount {
+		return domain.ErrNotFound
+	}
+
+	err := s.financialTransactionRepo.PerformTransaction(txn)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *Service) GetAllTransactions() ([]*domain.Transaction, error) {
+	return s.financialTransactionRepo.GetAllTransactions()
 }

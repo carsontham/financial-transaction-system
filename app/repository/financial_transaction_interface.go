@@ -2,12 +2,15 @@ package repository
 
 import (
 	"financial-transaction-system/app/domain"
-	"financial-transaction-system/app/repository/dbmodel"
 )
+
+//go:generate mockgen -source=financial_transaction_interface.go -package repositorytest -destination ../../tests/financial_transaction_repo_mock.go
 
 // FinancialTransactionRepository is the dependency to be injected into components that require access to the DB
 type FinancialTransactionRepository interface {
 	GetAccountByID(id int64) (*domain.Account, error)
-	CreateNewAccount(account *dbmodel.Account) error
-	CreateNewTransaction() error
+	CreateNewAccount(account *domain.Account) error
+	GetTransactionByIdempotencyKey(string) (*domain.Transaction, error)
+	PerformTransaction(*domain.Transaction) error
+	GetAllTransactions() ([]*domain.Transaction, error)
 }

@@ -31,8 +31,8 @@ func CreateNewAccount(service *usecase.Service, v *validator.Validate) http.Hand
 		account, _ := domain.AccountViewModelToDomainModel(&accountReq)
 
 		// a form of idempotency check
-		isFirstReq := service.IsFirstRequest(account.AccountID)
-		if !isFirstReq {
+		accExist := service.CheckIfAccountExist(account.AccountID)
+		if accExist {
 			rest.StatusOK(w, nil)
 			return
 		}
