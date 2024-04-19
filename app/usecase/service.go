@@ -27,8 +27,8 @@ func (s *Service) GetAccountById(id int64) (*domain.Account, error) {
 }
 
 // CheckIfAccountExist checks whether account exists (serves as a form of idempotency check)
-func (s *Service) CheckIfAccountExist(id int64) bool {
-	_, err := s.GetAccountById(id)
+func CheckIfAccountExist(service *Service, id int64) bool {
+	_, err := service.GetAccountById(id)
 	if errors.Is(err, domain.ErrNotFound) {
 		log.Println("account  - ID not found")
 		return false
@@ -46,7 +46,7 @@ func (s *Service) CreateNewAccount(account *domain.Account) error {
 	return nil
 }
 
-func (s *Service) GetTransaction(key string) (*domain.Transaction, error) {
+func (s *Service) GetTransactionByIdempotencyKey(key string) (*domain.Transaction, error) {
 	transaction, err := s.financialTransactionRepo.GetTransactionByIdempotencyKey(key)
 	if err != nil {
 		return nil, err
@@ -56,8 +56,8 @@ func (s *Service) GetTransaction(key string) (*domain.Transaction, error) {
 
 // PerformTransaction checks for valid source and destination accounts before making the transfer
 func (s *Service) PerformTransaction(txn *domain.Transaction) error {
-	isValidSourceAccount := s.CheckIfAccountExist(txn.SourceAccountID)
-	isValidDestinationAccount := s.CheckIfAccountExist(txn.DestinationAccountID)
+	isValidSourceAccount := CheckIfAccountExist(s, txn.SourceAccountID)
+	isValidDestinationAccount := CheckIfAccountExist(s, txn.DestinationAccountID)
 	if !isValidSourceAccount || !isValidDestinationAccount {
 		return domain.ErrNotFound
 	}

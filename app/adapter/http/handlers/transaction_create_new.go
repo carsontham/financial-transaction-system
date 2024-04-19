@@ -36,7 +36,7 @@ func CreateNewTransaction(service *usecase.Service, v *validator.Validate) http.
 			idempotencyKey = "hello"
 		}
 
-		txn, err := service.GetTransaction(idempotencyKey)
+		txn, err := service.GetTransactionByIdempotencyKey(idempotencyKey)
 		if err != nil {
 			if !errors.Is(err, domain.ErrNotFound) {
 				rest.InternalServerError(w)

@@ -71,36 +71,6 @@ func TestService_CreateNewAccount(t *testing.T) {
 
 }
 
-func TestService_CheckIfAccountExist(t *testing.T) {
-	setup := func(t *testing.T) (
-		repoMock *repositorytest.MockFinancialTransactionRepository,
-		service *Service,
-	) {
-		ctrl := gomock.NewController(t)
-		repoMock = repositorytest.NewMockFinancialTransactionRepository(ctrl)
-		service = NewService(repoMock)
-		return
-	}
-
-	t.Run("it should return false as account does not exists", func(t *testing.T) {
-		repo, service := setup(t)
-		repo.EXPECT().GetAccountByID(int64(123)).Return(nil, domain.ErrNotFound).Times(1)
-		expectFalse := service.CheckIfAccountExist(int64(123))
-		assert.Equal(t, false, expectFalse)
-	})
-
-	t.Run("it should return true as account exists", func(t *testing.T) {
-		repo, service := setup(t)
-		stubAccount := &domain.Account{
-			AccountID: 123,
-			Balance:   100.12345,
-		}
-		repo.EXPECT().GetAccountByID(int64(123)).Return(stubAccount, nil).Times(1)
-		expectTrue := service.CheckIfAccountExist(int64(123))
-		assert.Equal(t, true, expectTrue)
-	})
-}
-
 func TestService_GetTransaction(t *testing.T) {
 	setup := func(t *testing.T) (
 		repoMock *repositorytest.MockFinancialTransactionRepository,
@@ -123,7 +93,7 @@ func TestService_GetTransaction(t *testing.T) {
 			IdempotencyKey:       key,
 		}
 		repo.EXPECT().GetTransactionByIdempotencyKey(key).Return(stubTxn, nil).Times(1)
-		actualTxn, err := service.GetTransaction(key)
+		actualTxn, err := service.GetTransactionByIdempotencyKey(key)
 		assert.NoError(t, err)
 		assert.Equal(t, stubTxn, actualTxn)
 	})
@@ -133,7 +103,7 @@ func TestService_GetTransaction(t *testing.T) {
 		key := "testKey"
 		stubError := errors.New("error")
 		repo.EXPECT().GetTransactionByIdempotencyKey(key).Return(nil, stubError).Times(1)
-		_, err := service.GetTransaction(key)
+		_, err := service.GetTransactionByIdempotencyKey(key)
 		require.ErrorIs(t, err, stubError)
 	})
 }
