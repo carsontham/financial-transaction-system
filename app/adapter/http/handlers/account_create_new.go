@@ -2,42 +2,46 @@ package handlers
 
 import (
 	"encoding/json"
-	"errors"
 	"financial-transaction-system/app/adapter/http/handlers/viewmodel"
 	"financial-transaction-system/app/adapter/http/rest"
 	"financial-transaction-system/app/domain"
 	"financial-transaction-system/app/usecase"
-	"fmt"
+	"github.com/go-playground/validator/v10"
 	"net/http"
 )
 
-func CreateNewAccount(service *usecase.Service) http.HandlerFunc {
+func CreateNewAccount(service *usecase.Service, v *validator.Validate) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		fmt.Println("In handler layer - Creating new accounts")
 
-		var account viewmodel.AccountRequest
-		if err := json.NewDecoder(req.Body).Decode(&account); err != nil {
+		var accountReq viewmodel.AccountRequest
+		if err := json.NewDecoder(req.Body).Decode(&accountReq); err != nil {
 			rest.BadRequest(w)
 			return
 		}
+
+		if err := v.Struct(accountReq); err != nil {
+			if ve, ok := err.(validator.ValidationErrors); ok {
+				rest.UnprocessableEntity(w, ve)
+			} else {
+				rest.InternalServerError(w)
+			}
+			return
+		}
+
+		account, _ := domain.AccountViewModelToDomainModel(&accountReq)
+
 		// a form of idempotency check
 		isFirstReq := service.IsFirstRequest(account.AccountID)
-
 		if !isFirstReq {
 			rest.StatusOK(w, nil)
 			return
 		}
 
-		err := service.CreateNewAccount(&account)
+		err := service.CreateNewAccount(account)
 		if err != nil {
-			if errors.Is(err, domain.ErrParseStringToFloat) {
-				rest.UnprocessableEntity(w)
-				return
-			}
 			rest.InternalServerError(w)
 			return
 		}
-
 		rest.StatusCreated(w)
 	}
 }

@@ -2,6 +2,7 @@ package domain
 
 import (
 	"financial-transaction-system/app/adapter/http/handlers/viewmodel"
+	"log"
 	"strconv"
 )
 
@@ -28,6 +29,7 @@ func AccountViewModelToDomainModel(acc *viewmodel.AccountRequest) (*Account, err
 
 	balance, err := strconv.ParseFloat(acc.Balance, 64)
 	if err != nil {
+		log.Println("error parsing string balance to float balance")
 		return nil, err
 	}
 	return &Account{AccountID: acc.AccountID, Balance: balance}, nil

@@ -3,12 +3,14 @@ package rest
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/go-playground/validator/v10"
 	"net/http"
 )
 
 type JSONRespBody struct {
 	StatusCode int         `json:"status_code"`
 	Data       interface{} `json:"data,omitempty"`
+	Error      interface{} `json:"error,omitempty"`
 }
 
 // StatusOK for 200
@@ -81,10 +83,21 @@ func NotFound(w http.ResponseWriter) {
 }
 
 // UnprocessableEntity for 422
-func UnprocessableEntity(w http.ResponseWriter) {
+func UnprocessableEntity(w http.ResponseWriter, errors error) {
+	var err interface{}
+	if fieldErrors, ok := errors.(validator.ValidationErrors); ok {
+		fieldErrorsMap := make(map[string]string, len(fieldErrors))
+		for _, ve := range fieldErrors {
+			fieldErrorsMap[ve.Namespace()] = ve.Translate(nil)
+		}
+		err = fieldErrorsMap
+	} else {
+		err = errors.Error()
+	}
+
 	body := &JSONRespBody{
 		StatusCode: http.StatusUnprocessableEntity,
-		Data:       "Invalid payload body",
+		Error:      err,
 	}
 	b, err := json.Marshal(body)
 	if err != nil {

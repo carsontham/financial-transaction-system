@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"financial-transaction-system/app/adapter/http/handlers/viewmodel"
 	"financial-transaction-system/app/domain"
 	"financial-transaction-system/app/repository"
 	"financial-transaction-system/app/repository/dbmodel"
@@ -38,13 +37,8 @@ func (s *Service) IsFirstRequest(id int64) bool {
 	return false
 }
 
-func (s *Service) CreateNewAccount(acc *viewmodel.AccountRequest) error {
+func (s *Service) CreateNewAccount(account *domain.Account) error {
 	log.Println("in use case layer")
-	account, err := domain.AccountViewModelToDomainModel(acc)
-	if err != nil {
-		log.Println("error parsing string balance to float balance")
-		return domain.ErrParseStringToFloat
-	}
 
 	accDBModel := dbmodel.AccountDomainModelToDBModel(account)
 	if err := s.financialTransactionRepo.CreateNewAccount(accDBModel); err != nil {
