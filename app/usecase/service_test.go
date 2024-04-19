@@ -3,7 +3,7 @@ package usecase
 import (
 	"errors"
 	"financial-transaction-system/app/domain"
-	repositorytest "financial-transaction-system/tests"
+	"financial-transaction-system/tests/repositorytest"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

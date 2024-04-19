@@ -11,15 +11,11 @@ import (
 	"strconv"
 )
 
-func GetAccountByID(service *usecase.Service) http.HandlerFunc {
+func GetAccountByID(service usecase.FinancialTransactionService) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		log.Println("In handler layer - Getting Account By ID")
 
-		accountID, err := strconv.ParseInt(chi.URLParam(req, "account_id"), 10, 64)
-		if err != nil {
-			log.Println("invalid account_id", err)
-		}
-
+		accountID, _ := strconv.ParseInt(chi.URLParam(req, "account_id"), 10, 64)
 		acc, err := service.GetAccountById(accountID)
 		if err != nil {
 			log.Println(err)

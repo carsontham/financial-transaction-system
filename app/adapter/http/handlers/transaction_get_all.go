@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func GetAllTransactions(service *usecase.Service) http.HandlerFunc {
+func GetAllTransactions(service usecase.FinancialTransactionService) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		fmt.Println("In handler layer - retrieving all transactions")
 

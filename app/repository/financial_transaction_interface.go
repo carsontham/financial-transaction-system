@@ -4,7 +4,7 @@ import (
 	"financial-transaction-system/app/domain"
 )
 
-//go:generate mockgen -source=financial_transaction_interface.go -package repositorytest -destination ../../tests/financial_transaction_repo_mock.go
+//go:generate mockgen -source=financial_transaction_interface.go -package repositorytest -destination ../../tests/repositorytest/financial_transaction_repo_mock.go
 
 // FinancialTransactionRepository is the dependency to be injected into components that require access to the DB
 type FinancialTransactionRepository interface {

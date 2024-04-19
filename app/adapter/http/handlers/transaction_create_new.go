@@ -12,7 +12,7 @@ import (
 	"net/http"
 )
 
-func CreateNewTransaction(service *usecase.Service, v *validator.Validate) http.HandlerFunc {
+func CreateNewTransaction(service usecase.FinancialTransactionService, v *validator.Validate) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		fmt.Println("In handler layer - Creating new transaction")
 

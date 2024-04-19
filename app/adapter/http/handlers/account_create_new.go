@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func CreateNewAccount(service *usecase.Service, v *validator.Validate) http.HandlerFunc {
+func CreateNewAccount(service usecase.FinancialTransactionService, v *validator.Validate) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 
 		var accountReq viewmodel.AccountRequest

@@ -7,6 +7,8 @@ import (
 	"log"
 )
 
+var _ FinancialTransactionService = (*Service)(nil)
+
 type Service struct {
 	financialTransactionRepo repository.FinancialTransactionRepository
 }
@@ -27,7 +29,7 @@ func (s *Service) GetAccountById(id int64) (*domain.Account, error) {
 }
 
 // CheckIfAccountExist checks whether account exists (serves as a form of idempotency check)
-func CheckIfAccountExist(service *Service, id int64) bool {
+func CheckIfAccountExist(service FinancialTransactionService, id int64) bool {
 	_, err := service.GetAccountById(id)
 	if errors.Is(err, domain.ErrNotFound) {
 		log.Println("account  - ID not found")

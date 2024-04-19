@@ -4,7 +4,7 @@ import (
 	"financial-transaction-system/app/domain"
 )
 
-//go:generate mockgen -source=service_interface.go -package repositorytest -destination ../../tests/service_mock.go
+//go:generate mockgen -source=service_interface.go -package servicetest -destination ../../tests/servicetest/service_mock.go
 
 type FinancialTransactionService interface {
 	GetAccountById(int64) (*domain.Account, error)
