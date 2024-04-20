@@ -1,0 +1,164 @@
+openapi: 3.0.1
+info:
+  title: Financial Transaction System - OpenAPI 3.0
+  description: |-
+    This is a backend service that provides APIs for creating account, retrieving account, making transfer transaction and retrieving all transactions.
+  version: 1.0.
+tags:
+  - name: accounts
+    description: For creating and retrieving accounts by ID
+  - name: transactions
+    description: For creating and retrieving transactions
+paths:
+  /accounts:
+    post:
+      tags:
+        - accounts
+      summary: Create a new account
+      description: Create a new account
+      requestBody:
+        description: Creates a new account
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountRequest'
+        required: true
+      responses:
+        200:
+          description: Status OK
+        404:
+          description: Resource Not Found
+        500:
+          description: Internal Server Error
+  /accounts/{account_id}:
+    get:
+      tags:
+        - accounts
+      summary: Get an account by ID
+      description: Get an account by its unique identifier.
+      parameters:
+        - name: account_id
+          in: path
+          description: ID of the account to retrieve
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Status OK
+        404:
+          description: Resource not found
+        422:
+          description: Validation Errors
+  /transactions:
+    get:
+      tags:
+        - transactions
+      summary: Retrieve all transactions
+      description: Retrieve all transactions
+      responses:
+        200:
+          description: Status OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      schema:
+                      $ref: '#/components/schemas/TransactionResponse'
+        500:
+          description: Internal Server Error
+    post:
+      tags:
+        - transactions
+      summary: Create a new transfer transaction
+      description: Create a new transaction
+      requestBody:
+        description: Contains source, destination and amount to transfer
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRequest'
+        required: true
+      responses:
+        200:
+          description: Status OK
+        400:
+          description: Bad Request
+        404:
+          description: Resource not found
+        409:
+          description: The payment cannot be processed
+        422:
+          description: Validation Errors
+        500:
+          description: Internal Server Error
+
+
+
+components:
+  schemas:
+    AccountRequest:
+      type: object
+      properties:
+        account_id:
+          type: integer
+          format: int64
+          example: 123
+        initial_balance:
+          type: string
+          example: "100.23344"
+    AccountResponse:
+      type: object
+      properties:
+        account_id:
+          type: integer
+          format: int64
+          example: 123
+        balance:
+          type: string
+          example: "100.23344"
+    TransactionRequest:
+      type: object
+      properties:
+        source_account_id:
+          type: integer
+          format: int64
+          example: 123
+        destination_account_id:
+          type: integer
+          format: int64
+          example: 321
+        amount:
+          type: string
+          example: "100.23344"
+    TransactionResponse:
+      type: object
+      properties:
+        transaction_id:
+          type: integer
+          format: int64
+          example: 001
+        source_account_id:
+          type: integer
+          format: int64
+          example: 123
+        destination_account_id:
+          type: integer
+          format: int64
+          example: 321
+        amount:
+          type: string
+          example: "100.23344"
+        idempotency_key:
+          type: string
+          example: "test-idempotency-key"
