@@ -37,7 +37,7 @@ func CreateNewTransaction(service usecase.FinancialTransactionService, v *valida
 		if idempotencyKey == "" {
 			idempotencyKey = "temp-key" +
 				strconv.FormatInt(transactionReq.SourceAccountID, 10) +
-				strconv.FormatInt(transactionReq.SourceAccountID, 10) + time.Now().String()
+				strconv.FormatInt(transactionReq.SourceAccountID, 10) + time.Now().Format("2006-01-02 15:04:05")
 		}
 
 		txn, err := service.GetTransactionByIdempotencyKey(idempotencyKey)

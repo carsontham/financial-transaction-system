@@ -15,6 +15,7 @@ import (
 	"net/http/httptest"
 	"strconv"
 	"testing"
+	"time"
 )
 
 func TestCreateNewTransaction(t *testing.T) {
@@ -51,7 +52,7 @@ func TestCreateNewTransaction(t *testing.T) {
 		}
 		stubTransaction.IdempotencyKey = "temp-key" +
 			strconv.FormatInt(stubTransaction.SourceAccountID, 10) +
-			strconv.FormatInt(stubTransaction.SourceAccountID, 10)
+			strconv.FormatInt(stubTransaction.SourceAccountID, 10) + time.Now().Format("2006-01-02 15:04:05")
 
 		serviceMock.EXPECT().GetTransactionByIdempotencyKey(gomock.Any()).Times(1).Return(nil, domain.ErrNotFound)
 		serviceMock.EXPECT().PerformTransaction(stubTransaction).Times(1).Return(nil)
@@ -158,7 +159,7 @@ func TestCreateNewTransaction(t *testing.T) {
 		}
 		stubTransaction.IdempotencyKey = "temp-key" +
 			strconv.FormatInt(stubTransaction.SourceAccountID, 10) +
-			strconv.FormatInt(stubTransaction.SourceAccountID, 10)
+			strconv.FormatInt(stubTransaction.SourceAccountID, 10) + time.Now().Format("2006-01-02 15:04:05")
 
 		serviceMock.EXPECT().GetTransactionByIdempotencyKey(gomock.Any()).Times(1).Return(nil, domain.ErrNotFound)
 		serviceMock.EXPECT().PerformTransaction(stubTransaction).Times(1).Return(domain.ErrNotFound)
@@ -185,7 +186,7 @@ func TestCreateNewTransaction(t *testing.T) {
 		}
 		stubTransaction.IdempotencyKey = "temp-key" +
 			strconv.FormatInt(stubTransaction.SourceAccountID, 10) +
-			strconv.FormatInt(stubTransaction.SourceAccountID, 10)
+			strconv.FormatInt(stubTransaction.SourceAccountID, 10) + time.Now().Format("2006-01-02 15:04:05")
 
 		serviceMock.EXPECT().GetTransactionByIdempotencyKey(gomock.Any()).Times(1).Return(nil, domain.ErrNotFound)
 		serviceMock.EXPECT().PerformTransaction(stubTransaction).Times(1).Return(domain.ErrInsufficientBalance)
@@ -212,7 +213,7 @@ func TestCreateNewTransaction(t *testing.T) {
 		}
 		stubTransaction.IdempotencyKey = "temp-key" +
 			strconv.FormatInt(stubTransaction.SourceAccountID, 10) +
-			strconv.FormatInt(stubTransaction.SourceAccountID, 10)
+			strconv.FormatInt(stubTransaction.SourceAccountID, 10) + time.Now().Format("2006-01-02 15:04:05")
 
 		stubError := errors.New("unexpected internal error")
 		serviceMock.EXPECT().GetTransactionByIdempotencyKey(gomock.Any()).Times(1).Return(nil, domain.ErrNotFound)
