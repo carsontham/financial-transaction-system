@@ -30,6 +30,7 @@ make start-db
 **Note: If you wish to "restart" the database with default data, you can still use `make set-db`** 
 
 <h2>To run the server:</h2> 
+
 ```
 make run
 ```
@@ -37,14 +38,18 @@ The server will listen on port 3000.
 
 <h3>API Documentations </h3>
 - To view the API documentations using OpenAPI, run:
+
 ```
 make swagger
 ```
-This runs swagger-ui using Docker on port :80. You can now visit localhost:80 to view the documentations.
-![Screenshot 2024-04-20 at 5.28.50 PM.png](..%2F..%2F..%2F..%2Fvar%2Ffolders%2F_y%2F0grwfc8j3f775kxb9_f86ky40000gn%2FT%2FTemporaryItems%2FNSIRD_screencaptureui_1xYXxw%2FScreenshot%202024-04-20%20at%205.28.50%20PM.png)
+This runs swagger-ui using Docker on port :80. You can now visit localhost:80 to view the API documentations.
+
+<img width="1000" alt="Screenshot 2024-04-20 at 5 49 38 PM" src="https://github.com/carsontham/financial-transaction-system/assets/127476216/77b42ca7-4fb4-4117-8977-1989ccd8c486">
 
 <h3>API ENDPOINTS</h3>
-POST /accounts - create new account
+
+**POST /accounts - create new account**
+
 ```
 example req body :
 
@@ -56,7 +61,8 @@ example req body :
 responses: 200, 400, 422, 500 
 ```
 
-GET /accounts/{account_id} - get an account by id
+**GET /accounts/{account_id} - get an account by id**
+
 ```
 example response body:
 
@@ -71,13 +77,14 @@ example response body:
 repsonse: 200, 404, 500
 ```
 
-POST /transactions - create a new payment transaction
+**POST /transactions - create a new payment transaction**
 
 This request is made idempotent using an idempotency key. The assumption is that the Idempotency Key is generated on Client Side, for each new requests.
 
 To test for Idempotency, include a unique string in request Header as
 "X-Idempotency-Key". Subsequent requests with the same key will not perform a transfer but return the same results.
 By default, if no key is present in header, a unique-key will be generated.
+
 ```
 example req body:
 
@@ -97,9 +104,10 @@ example response body:
 repsonse: 200, 400, 404, 409, 422, 500
 
 note - 409 occurs when balance is insufficient
+
 ```
 
-GET /transactions - Get all transactions
+**GET /transactions - Get all transactions**
 
 This function is created mainly for easy retrieval of all the transactions without always going to the DB
 
