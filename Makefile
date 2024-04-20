@@ -12,7 +12,7 @@ stop-db:
 	-docker stop financial_transaction_container
 
 # delete and create a new container - resets the database to default (for testing purposes)
-restart-db: stop-db remove-db remove-volume db
+set-db: stop-db remove-db remove-volume db
 
 # pulls postgres image
 postgres-image:
@@ -56,20 +56,23 @@ coverage:
 	go test -coverprofile=coverage.out ./app/usecase
 	go tool cover -html=coverage.out
 
-# unit-tests for service layer
+# unit-test for service layer
 unit-test:
 	go test -coverprofile=coverage.out ./app/usecase
 	go test -coverprofile=coverage.out ./app/adapter/http/handlers
 
 CURRENT_DIR := $(shell pwd)
+# spin up swagger locally on port :80
 swagger: swagger-delete
 	docker run --name new-swagger-ui-container -p 80:8080 -e SWAGGER_JSON=/api.yaml -v $(CURRENT_DIR)/swagger.yaml:/api.yaml -d swaggerapi/swagger-ui
 
+# stop and delete swagger container
 swagger-delete: swagger-stop-rm
 
 swagger-stop-rm:
 	-docker stop new-swagger-ui-container
 	-docker rm new-swagger-ui-container
 
+# allow editing of swagger docs using swagger-editor
 swagger-editor:
 	docker run -p 8080:8080 swaggerapi/swagger-editor

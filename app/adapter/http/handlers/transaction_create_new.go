@@ -11,6 +11,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func CreateNewTransaction(service usecase.FinancialTransactionService, v *validator.Validate) http.HandlerFunc {
@@ -36,7 +37,7 @@ func CreateNewTransaction(service usecase.FinancialTransactionService, v *valida
 		if idempotencyKey == "" {
 			idempotencyKey = "temp-key" +
 				strconv.FormatInt(transactionReq.SourceAccountID, 10) +
-				strconv.FormatInt(transactionReq.SourceAccountID, 10)
+				strconv.FormatInt(transactionReq.SourceAccountID, 10) + time.Now().String()
 		}
 
 		txn, err := service.GetTransactionByIdempotencyKey(idempotencyKey)

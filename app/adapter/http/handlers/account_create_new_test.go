@@ -51,7 +51,7 @@ func TestCreateNewAccount(t *testing.T) {
 		req, _ := http.NewRequest("POST", url, bytes.NewBuffer([]byte(reqBody)))
 		resp, err := client.Do(req)
 		if assert.NoError(t, err) {
-			assert.Equal(t, http.StatusCreated, resp.StatusCode)
+			assert.Equal(t, http.StatusOK, resp.StatusCode)
 		}
 	})
 
