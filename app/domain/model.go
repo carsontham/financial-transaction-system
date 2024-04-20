@@ -36,7 +36,7 @@ func AccountViewModelToDomainModel(acc *viewmodel.AccountRequest) (*Account, err
 	return &Account{AccountID: acc.AccountID, Balance: balance}, nil
 }
 
-func TransactionViewModelToDomainModel(transaction *viewmodel.TransactionRequest) (*Transaction, error) {
+func TransactionViewModelToDomainModel(transaction *viewmodel.TransactionRequest, key string) (*Transaction, error) {
 	amount, err := strconv.ParseFloat(transaction.Amount, 64)
 	if err != nil {
 		log.Println("error parsing string balance to float balance")
@@ -46,6 +46,7 @@ func TransactionViewModelToDomainModel(transaction *viewmodel.TransactionRequest
 		SourceAccountID:      transaction.SourceAccountID,
 		DestinationAccountID: transaction.DestinationAccountID,
 		Amount:               amount,
+		IdempotencyKey:       key,
 	}, nil
 }
 

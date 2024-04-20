@@ -7,6 +7,7 @@ import (
 	"financial-transaction-system/app/domain"
 	"financial-transaction-system/app/usecase"
 	"github.com/go-playground/validator/v10"
+	"log"
 	"net/http"
 )
 
@@ -33,15 +34,16 @@ func CreateNewAccount(service usecase.FinancialTransactionService, v *validator.
 		// a form of idempotency check
 		accExist := usecase.CheckIfAccountExist(service, account.AccountID)
 		if accExist {
-			rest.StatusOK(w, nil)
+			rest.StatusOK(w, "account created")
 			return
 		}
 
 		err := service.CreateNewAccount(account)
 		if err != nil {
+			log.Println(err)
 			rest.InternalServerError(w)
 			return
 		}
-		rest.StatusCreated(w)
+		rest.StatusOK(w, "account created")
 	}
 }

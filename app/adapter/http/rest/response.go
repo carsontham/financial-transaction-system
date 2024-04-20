@@ -30,38 +30,6 @@ func StatusOK(w http.ResponseWriter, data interface{}) {
 	w.Write(b)
 }
 
-// StatusCreated for 201
-func StatusCreated(w http.ResponseWriter) {
-	body := &JSONRespBody{
-		StatusCode: http.StatusCreated,
-		Data:       "new item created",
-	}
-	b, err := json.Marshal(body)
-	if err != nil {
-		fmt.Println("Error during marshalling json body")
-		return
-	}
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusCreated)
-	w.Write(b)
-}
-
-// StatusCreated for 204
-func StatusNoContent(w http.ResponseWriter) {
-	body := &JSONRespBody{
-		StatusCode: http.StatusNoContent,
-		Data:       "row updated",
-	}
-	b, err := json.Marshal(body)
-	if err != nil {
-		fmt.Println("Error during marshalling json body")
-		return
-	}
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusNoContent)
-	w.Write(b)
-}
-
 // BadRequest for 400
 func BadRequest(w http.ResponseWriter, err error) {
 	body := &JSONRespBody{
@@ -75,6 +43,22 @@ func BadRequest(w http.ResponseWriter, err error) {
 	}
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusBadRequest)
+	w.Write(b)
+}
+
+// NotFound for 404
+func NotFound(w http.ResponseWriter) {
+	body := &JSONRespBody{
+		StatusCode: http.StatusNotFound,
+		Error:      "resource not found",
+	}
+	b, err := json.Marshal(body)
+	if err != nil {
+		log.Println("Error during marshalling json body")
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusNotFound)
 	w.Write(b)
 }
 
@@ -92,11 +76,6 @@ func StatusConflict(w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusConflict)
 	w.Write(b)
-}
-
-// NotFound for 404
-func NotFound(w http.ResponseWriter) {
-	w.WriteHeader(http.StatusNotFound)
 }
 
 // UnprocessableEntity for 422

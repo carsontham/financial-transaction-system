@@ -26,8 +26,10 @@ paths:
       responses:
         200:
           description: Status OK
-        404:
-          description: Resource Not Found
+        400:
+          description: Bad Request
+        422:
+          description: Validation Errors
         500:
           description: Internal Server Error
   /accounts/{account_id}:
@@ -49,8 +51,8 @@ paths:
           description: Status OK
         404:
           description: Resource not found
-        422:
-          description: Validation Errors
+        500:
+          description: Internal Server Error
   /transactions:
     get:
       tags:

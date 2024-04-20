@@ -61,6 +61,7 @@ func (s *Service) PerformTransaction(txn *domain.Transaction) error {
 	isValidSourceAccount := CheckIfAccountExist(s, txn.SourceAccountID)
 	isValidDestinationAccount := CheckIfAccountExist(s, txn.DestinationAccountID)
 	if !isValidSourceAccount || !isValidDestinationAccount {
+		log.Println("invalid account exist")
 		return domain.ErrNotFound
 	}
 

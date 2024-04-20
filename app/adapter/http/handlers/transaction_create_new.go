@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/go-playground/validator/v10"
 	"net/http"
+	"strconv"
 )
 
 func CreateNewTransaction(service usecase.FinancialTransactionService, v *validator.Validate) http.HandlerFunc {
@@ -33,7 +34,9 @@ func CreateNewTransaction(service usecase.FinancialTransactionService, v *valida
 		// Assumes that idempotency key is generated on client-side and sent in request Header
 		idempotencyKey := req.Header.Get(rest.HeaderIdempotencyKey)
 		if idempotencyKey == "" {
-			idempotencyKey = "hello"
+			idempotencyKey = "temp-key" +
+				strconv.FormatInt(transactionReq.SourceAccountID, 10) +
+				strconv.FormatInt(transactionReq.SourceAccountID, 10)
 		}
 
 		txn, err := service.GetTransactionByIdempotencyKey(idempotencyKey)
@@ -45,13 +48,17 @@ func CreateNewTransaction(service usecase.FinancialTransactionService, v *valida
 		}
 		// transaction already performed, returns 200 and idempotent result
 		if txn != nil {
-			rest.StatusOK(w, txn)
+			rest.StatusOK(w, "transaction successful")
 			return
 		}
 
-		transaction, _ := domain.TransactionViewModelToDomainModel(&transactionReq)
+		transaction, _ := domain.TransactionViewModelToDomainModel(&transactionReq, idempotencyKey)
 
 		if err := service.PerformTransaction(transaction); err != nil {
+			if errors.Is(err, domain.ErrNotFound) {
+				rest.NotFound(w)
+				return
+			}
 			if errors.Is(err, domain.ErrInsufficientBalance) {
 				rest.StatusConflict(w) //409
 				return
@@ -59,7 +66,7 @@ func CreateNewTransaction(service usecase.FinancialTransactionService, v *valida
 			rest.InternalServerError(w)
 			return
 		}
-		rest.StatusCreated(w)
+		rest.StatusOK(w, "transaction successful")
 		return
 	}
 }

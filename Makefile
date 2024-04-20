@@ -62,18 +62,14 @@ unit-test:
 	go test -coverprofile=coverage.out ./app/adapter/http/handlers
 
 CURRENT_DIR := $(shell pwd)
-swagger: swagger-stop swagger-delete
+swagger: swagger-delete
 	docker run --name new-swagger-ui-container -p 80:8080 -e SWAGGER_JSON=/api.yaml -v $(CURRENT_DIR)/swagger.yaml:/api.yaml -d swaggerapi/swagger-ui
+
+swagger-delete: swagger-stop-rm
+
+swagger-stop-rm:
+	-docker stop new-swagger-ui-container
+	-docker rm new-swagger-ui-container
 
 swagger-editor:
 	docker run -p 8080:8080 swaggerapi/swagger-editor
-
-swagger-delete: swagger-stop swagger-rm
-
-swagger-stop:
-	-docker stop new-swagger-ui-container
-
-swagger-rm:
-	-docker rm new-swagger-ui-container
-
-
