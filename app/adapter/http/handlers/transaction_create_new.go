@@ -34,7 +34,7 @@ func CreateNewTransaction(service usecase.FinancialTransactionService, v *valida
 		// Assumes that idempotency key is generated on client-side and sent in request Header
 		idempotencyKey := req.Header.Get(rest.HeaderIdempotencyKey)
 		if idempotencyKey == "" {
-			idempotencyKey = uuid.New().String()
+			idempotencyKey = uuid.New().String() // uses unique uuid for each transaction
 		}
 
 		txn, err := service.GetTransactionByIdempotencyKey(idempotencyKey)
