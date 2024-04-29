@@ -3,7 +3,7 @@ This application demonstrate the following:
 - Creating an application that adheres to [The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - Dependency Injection to enable modular code
 - Docker to spin up PostgresDB and Swagger UI
-- Writing Unit Tests (>90% code coverage) through the use of mocking
+- Writing Unit Tests (>95% code coverage) through the use of mocking
 
 # Introduction
 The application follows [The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) and there are three main layers to this project:
