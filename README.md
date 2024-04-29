@@ -2,7 +2,7 @@
 This application serves as a backend service to conduct financial transactions. It is written in Go and utilizes a PostgreSQL database that is spin up using docker.
 
 
-The application follows The Clean Architecture and there are three main layers to this project:
+The application follows [The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) and there are three main layers to this project:
 - handler layer - interacts with all external interface (REST API)
 - service/domain layer - interacts between handler and repository layer, conduct most business logics here
 - repository layer - interacts with the database (where SQL queries can be found)
