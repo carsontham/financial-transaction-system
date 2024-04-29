@@ -1,10 +1,11 @@
 # Financial-Transaction-System
 This application demonstrate the following:
 - Creating an application that adheres to [The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-- Dependency Injection for modular code
+- Dependency Injection to enable modular code
 - Docker to spin up PostgresDB and Swagger UI
 - Writing Unit Tests through the use of mocking
-  
+
+# Introduction
 The application follows [The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) and there are three main layers to this project:
 - handler layer - interacts with all external interface (REST API)
 - service/domain layer - interacts between handler and repository layer, conduct most business logics here
