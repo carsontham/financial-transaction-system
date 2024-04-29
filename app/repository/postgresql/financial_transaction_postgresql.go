@@ -18,18 +18,17 @@ var _ repository.FinancialTransactionRepository = (*FinancialTransactionPostgres
 type GetDB func() *sql.DB
 
 type FinancialTransactionPostgresRepository struct {
-	getDB GetDB
+	database *sql.DB
 }
 
-func NewFinancialTransactionRepository(getDBConnection GetDB) *FinancialTransactionPostgresRepository {
+func NewFinancialTransactionRepository(db *sql.DB) *FinancialTransactionPostgresRepository {
 	return &FinancialTransactionPostgresRepository{
-		getDB: getDBConnection,
+		database: db,
 	}
 }
 
 func (ftr FinancialTransactionPostgresRepository) GetAccountByID(id int64) (*domain.Account, error) {
-	db := ftr.getDB()
-
+	db := ftr.database
 	if db == nil {
 		log.Println("database error")
 	}
@@ -50,7 +49,7 @@ func (ftr FinancialTransactionPostgresRepository) GetAccountByID(id int64) (*dom
 }
 
 func (ftr FinancialTransactionPostgresRepository) CreateNewAccount(account *domain.Account) error {
-	db := ftr.getDB()
+	db := ftr.database
 	if db == nil {
 		log.Println("database error")
 	}
@@ -67,7 +66,7 @@ func (ftr FinancialTransactionPostgresRepository) CreateNewAccount(account *doma
 }
 
 func (ftr FinancialTransactionPostgresRepository) GetTransactionByIdempotencyKey(key string) (*domain.Transaction, error) {
-	db := ftr.getDB()
+	db := ftr.database
 	if db == nil {
 		log.Println("database error")
 	}
@@ -94,7 +93,7 @@ func (ftr FinancialTransactionPostgresRepository) GetTransactionByIdempotencyKey
 
 func (ftr FinancialTransactionPostgresRepository) PerformTransaction(transaction *domain.Transaction) error {
 	transactionDBModel := dbmodel.TransactionDomainModelToDBModel(transaction)
-	db := ftr.getDB()
+	db := ftr.database
 	if db == nil {
 		log.Println("database error")
 	}
@@ -169,7 +168,7 @@ func CreateTransactionLog(db *sql.DB, transaction *dbmodel.Transaction) error {
 }
 
 func (ftr FinancialTransactionPostgresRepository) GetAllTransactions() ([]*domain.Transaction, error) {
-	db := ftr.getDB()
+	db := ftr.database
 	if db == nil {
 		log.Println("database error")
 	}

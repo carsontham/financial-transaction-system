@@ -11,5 +11,6 @@ func (s *Server) SetUpRoutes(service *usecase.Service, validator *validator.Vali
 	s.router.Get("/accounts/{account_id:\\d+}", handlers.GetAccountByID(service))
 	s.router.Post("/accounts", handlers.CreateNewAccount(service, validator))
 	s.router.Post("/transactions", handlers.CreateNewTransaction(service, validator))
+
 	s.router.Get("/transactions", handlers.GetAllTransactions(service))
 }

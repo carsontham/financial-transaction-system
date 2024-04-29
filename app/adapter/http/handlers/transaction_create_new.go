@@ -9,9 +9,8 @@ import (
 	"financial-transaction-system/app/usecase"
 	"fmt"
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"net/http"
-	"strconv"
-	"time"
 )
 
 func CreateNewTransaction(service usecase.FinancialTransactionService, v *validator.Validate) http.HandlerFunc {
@@ -35,9 +34,7 @@ func CreateNewTransaction(service usecase.FinancialTransactionService, v *valida
 		// Assumes that idempotency key is generated on client-side and sent in request Header
 		idempotencyKey := req.Header.Get(rest.HeaderIdempotencyKey)
 		if idempotencyKey == "" {
-			idempotencyKey = "temp-key" +
-				strconv.FormatInt(transactionReq.SourceAccountID, 10) +
-				strconv.FormatInt(transactionReq.SourceAccountID, 10) + time.Now().Format("2006-01-02 15:04:05")
+			idempotencyKey = uuid.New().String()
 		}
 
 		txn, err := service.GetTransactionByIdempotencyKey(idempotencyKey)

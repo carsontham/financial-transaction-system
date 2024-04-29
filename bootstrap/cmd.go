@@ -9,7 +9,7 @@ import (
 
 func Run() {
 	s := NewServer(":3000")
-	repo := repository.NewFinancialTransactionRepository(GetDBConnection)
+	repo := repository.NewFinancialTransactionRepository(GetDB())
 	service := usecase.NewService(repo)
 	validator, err := rest.NewCustomValidator()
 	if err != nil {

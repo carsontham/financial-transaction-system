@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func GetDBConnection() *sql.DB {
+func GetDB() *sql.DB {
 	// these values can be placed in .env files
 	const driverName = "postgres"
 	const dataSourceName = "postgresql://root:secret@localhost:5432/financial-transaction-db?sslmode=disable"
