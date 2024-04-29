@@ -1,8 +1,8 @@
 # Financial-Transaction-System
-This application demonstrate the following:
+This application aims to demonstrate the following:
 - Creating an application that adheres to [The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - Dependency Injection to enable modular code
-- Docker to spin up PostgresDB and Swagger UI
+- Using Docker to spin up PostgresDB and Swagger UI
 - Writing Unit Tests (>95% code coverage) through the use of mocking
 
 # Introduction
